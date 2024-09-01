@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import arrowdown_icon from "../../assets/icons/group/arrow_down.svg";
+import close_icon from "../../assets/icons/close.svg";
 
-import {
-  WrapperContainer,
-  Container,
-  HeaderWrapperContainer,
-  HeaderContainer,
-  CloseButton,
-  HeaderTitle,
-  SubmitButton,
-} from "./promotion_components/ModalStyled";
+// import {
+//   WrapperContainer,
+//   Container,
+//   HeaderWrapperContainer,
+//   HeaderContainer,
+//   CloseButton,
+//   HeaderTitle,
+//   SubmitButton,
+// } from "./promotion_components/ModalStyled";
 import styled from "styled-components";
 import { getUserClubs } from "../../apis/api/user";
-import axios from "axios";
+import { RefreshContext } from "./Promotion";
+import api from "../../apis/utils/api";
 const AddQuestionInput = styled.input`
   width: 100%;
   height: 46px;
@@ -41,9 +43,10 @@ const PromotionWrite = ({ isOpen, closeModal }) => {
     questions: {},
   });
   const accessToken = localStorage.getItem("accessToken");
+  const changeRefresh = useContext(RefreshContext);
   const postPromotionAdd = async () => {
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${process.env.REACT_APP_SERVER_URL}/v1/api/recruitments`,
         input, // input을 request body로 보냄
         {
@@ -56,6 +59,7 @@ const PromotionWrite = ({ isOpen, closeModal }) => {
       console.log("홍보글 추가 완료", response.data);
       alert("동아리 홍보글이 등록되었습니다!");
       closeModal();
+      changeRefresh();
     } catch (err) {
       console.error("에러 발생:", err);
     }
@@ -119,81 +123,81 @@ const PromotionWrite = ({ isOpen, closeModal }) => {
       {isOpen && (
         <WrapperContainer>
           <Container>
-            <HeaderWrapperContainer>
-              <HeaderContainer>
-                <CloseButton onClick={closeModal} />
-                <HeaderTitle>모집글 작성하기</HeaderTitle>
-                <SubmitButton onClick={postPromotionAdd}>등록</SubmitButton>
-              </HeaderContainer>
-            </HeaderWrapperContainer>
-            <Title name="title" onChange={onChangeInput} placeholder="제목" />
-            <Line />
-            <EntireContainer>
-              <Wrapper>
-                <WrapperTitle>홍보 동아리</WrapperTitle>
+            <HeaderContainer>
+              <CloseButton onClick={closeModal} />
+              <HeaderTitle>모집글 작성하기</HeaderTitle>
+              <SubmitButton onClick={postPromotionAdd}>등록</SubmitButton>
+            </HeaderContainer>
+            <ContentContainer>
+              <Title name="title" onChange={onChangeInput} placeholder="제목" />
+              <Line />
+              <EntireContainer>
+                <Wrapper>
+                  <WrapperTitle>홍보 동아리</WrapperTitle>
 
-                <ChooseClub>
-                  <TitlePlaceholder $choose={recentClubName}>
-                    {recentClubName}
-                  </TitlePlaceholder>
-                  <ArrowDown
-                    onClick={(e) => {
-                      setShowGroupSelectList(!showGroupSelectList);
-                    }}
-                  />
-                </ChooseClub>
-                {showGroupSelectList && (
-                  <GroupItemWrapper>
-                    {groupData.map((group, index) => {
-                      return (
-                        <GroupItem
-                          key={group.clubId}
-                          onClick={() => {
-                            setInput({
-                              ...input,
-                              clubId: group.clubId,
-                            });
-                            setRecentClubName(group.clubName);
-                            setShowGroupSelectList(!showGroupSelectList);
-                          }}
-                        >
-                          {group.clubName}
-                        </GroupItem>
-                      );
-                    })}
-                  </GroupItemWrapper>
-                )}
-              </Wrapper>
-              <Wrapper>
-                <WrapperTitle>모집 기간</WrapperTitle>
-                <SmallWrapper>
-                  <WrapperSmallTitle>모집 시작일</WrapperSmallTitle>
-                  <ChooseDate
-                    type="date"
-                    name="startDate"
-                    onChange={onChangeInput}
-                    value={input.startDate}
-                  ></ChooseDate>
-                </SmallWrapper>
-                <SmallWrapper>
-                  <WrapperSmallTitle>모집 마감일</WrapperSmallTitle>
-                  <ChooseDate
-                    type="date"
-                    name="endDate"
-                    onChange={onChangeInput}
-                    value={input.endDate}
-                  ></ChooseDate>
-                </SmallWrapper>
-              </Wrapper>
-              <Wrapper>
-                <WrapperTitle>지원서 문항</WrapperTitle>
-                <QuestionList>{questionList}</QuestionList>
-                <AddQuestionButton onClick={addQuestion}>
-                  <AddButtonPlus>+</AddButtonPlus>
-                  <AddButtonText>문항 추가하기</AddButtonText>
-                </AddQuestionButton>
-              </Wrapper>
-            </EntireContainer>
+                  <ChooseClub>
+                    <TitlePlaceholder $choose={recentClubName}>
+                      {recentClubName}
+                    </TitlePlaceholder>
+                    <ArrowDown
+                      onClick={(e) => {
+                        setShowGroupSelectList(!showGroupSelectList);
+                      }}
+                    />
+                  </ChooseClub>
+                  {showGroupSelectList && (
+                    <GroupItemWrapper>
+                      {groupData.map((group, index) => {
+                        return (
+                          <GroupItem
+                            key={group.clubId}
+                            onClick={() => {
+                              setInput({
+                                ...input,
+                                clubId: group.clubId,
+                              });
+                              setRecentClubName(group.clubName);
+                              setShowGroupSelectList(!showGroupSelectList);
+                            }}
+                          >
+                            {group.clubName}
+                          </GroupItem>
+                        );
+                      })}
+                    </GroupItemWrapper>
+                  )}
+                </Wrapper>
+                <Wrapper>
+                  <WrapperTitle>모집 기간</WrapperTitle>
+                  <SmallWrapper>
+                    <WrapperSmallTitle>모집 시작일</WrapperSmallTitle>
+                    <ChooseDate
+                      type="date"
+                      name="startDate"
+                      onChange={onChangeInput}
+                      value={input.startDate}
+                    ></ChooseDate>
+                  </SmallWrapper>
+                  <SmallWrapper>
+                    <WrapperSmallTitle>모집 마감일</WrapperSmallTitle>
+                    <ChooseDate
+                      type="date"
+                      name="endDate"
+                      onChange={onChangeInput}
+                      value={input.endDate}
+                    ></ChooseDate>
+                  </SmallWrapper>
+                </Wrapper>
+                <Wrapper>
+                  <WrapperTitle>지원서 문항</WrapperTitle>
+                  <QuestionList>{questionList}</QuestionList>
+                  <AddQuestionButton onClick={addQuestion}>
+                    <AddButtonPlus>+</AddButtonPlus>
+                    <AddButtonText>문항 추가하기</AddButtonText>
+                  </AddQuestionButton>
+                </Wrapper>
+              </EntireContainer>
+            </ContentContainer>
           </Container>
         </WrapperContainer>
       )}
@@ -202,6 +206,74 @@ const PromotionWrite = ({ isOpen, closeModal }) => {
 };
 
 export default PromotionWrite;
+
+const WrapperContainer = styled.div`
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: 10000;
+  justify-content: center;
+`;
+
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  max-width: 649px;
+  justify-content: center;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+`;
+
+const HeaderContainer = styled.div`
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  gap: 4px;
+  border-bottom: 1px solid #dcdcdc;
+  justify-content: space-between;
+`;
+
+const CloseButton = styled.div`
+  height: 24px;
+  width: 24px;
+  background-image: url(${close_icon});
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+`;
+
+const HeaderTitle = styled.div`
+  color: ${({ theme }) => theme.colors.neutral[600]};
+  font-size: 20px;
+  font-weight: 600;
+`;
+
+const SubmitButton = styled.div`
+  color: ${({ theme }) => theme.colors.main[600]};
+  font-size: 20px;
+  font-weight: 600;
+`;
+
+const ContentContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+`;
+
+
 const EntireContainer = styled.div`
   width: 100%;
   display: flex;

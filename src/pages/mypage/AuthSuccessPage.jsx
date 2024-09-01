@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import close_icon from '../../assets/icons/close.svg';
 import check_icon from '../../assets/icons/check-circle.svg';
@@ -57,6 +57,15 @@ const HeaderTitle = styled.div`
   color: ${({ theme }) => theme.colors.neutral[600]};
   font-size: 20px;
   font-weight: bold;
+`;
+
+const SubmitButton = styled.div`
+  color: ${({ theme }) => theme.colors.main[500]};
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
 `;
 
 const ContentContainer = styled.div`

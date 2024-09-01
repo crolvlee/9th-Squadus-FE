@@ -1,7 +1,5 @@
 import { useContext, useState } from "react";
-import ScheduleItem, {
-  AddSchedule,
-} from "../../group/schedule/schedule_components/ScheduleItem";
+import ScheduleItem from "../../group/schedule/schedule_components/ScheduleItem";
 
 import { groupDataContext, scheduleContext } from "../Home";
 import styled from "styled-components";
@@ -33,7 +31,13 @@ const MainScheduleItem = ({ onClick }) => {
       {todaySchedule.length !== 0 ? (
         todaySchedule.map((item, index) => (
           <ScheduleItem
-            onClick={onClick}
+            // onClick={onClick}
+            // key={index}
+            // startTime={item.startTime}
+            // endTime={item.endTime}
+            // eventName={item.eventName}
+            // Location={item.location}
+            // id={index + 1}
             key={index}
             startTime={item.startTime}
             endTime={item.endTime}
@@ -45,14 +49,13 @@ const MainScheduleItem = ({ onClick }) => {
       ) : (
         <>
           <EmptyScheduleText>등록된 일정이 없어요</EmptyScheduleText>
-          <AddSchedule onClick={toggleModal}></AddSchedule>
         </>
       )}
-      <ScheduleAdd
+      {/* <ScheduleAdd
         isOpen={isModalOpen}
         onClose={closeModal}
         isAccessHome={groupData[0]}
-      />
+      /> */}
     </>
   );
 };
